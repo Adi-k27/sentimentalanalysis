@@ -7,10 +7,10 @@ sentimentalanalysis/
 │   ├── raw/                   # Original dataset
 │   ├── processed/             # Cleaned and transformed data
 │   ├── output/                # Model predictions and analysis
-│── notebooks/                 # Jupyter Notebooks for EDA & NLP
+│── notebooks/                 # Jupyter Notebooks for EDA
 │── src/
 │   ├── data_preprocessing.py  # Data cleaning and transformation
-│   ├── sentiment_analysis.py  # NLP model implementation
+│   ├── sentiment_analysis.py  # Implementation
 │   ├── visualize.py           # Data visualization scripts
 │── reports/
 │   ├── figures/               # Power BI export images
@@ -19,6 +19,7 @@ sentimentalanalysis/
 │── models/                    # Trained NLP models
 │── requirements.txt           # Python dependencies
 │── README.md                  # Project documentation
+│── projectinfo.txt                  # Project Addtional Information
 │── .gitignore                 # Ignore unnecessary files
 
 python -m venv venv
@@ -29,5 +30,11 @@ venv\Scripts\activate     # (Windows)
 python -m venv venv
 source venv/bin/activate  # (Linux/Mac)
 venv\Scripts\activate     # (Windows)
+
+
+
+## Exploring the data
+Any columns with french is removed as we will be doing it in english.
+
 
 
