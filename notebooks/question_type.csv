@@ -1,0 +1,14 @@
+﻿QuestionType,Answer1ENG,Answer2ENG,Answer3ENG,Answer4ENG,Answer5ENG,Answer6ENG,Answer7ENG,PositiveENG,NegativeENG,AnscountENG
+1,Strongly agree,Somewhat agree,Neither agree nor disagree,Somewhat disagree,Strongly disagree,Don't know,Not applicable,Most positive or least negative answers <br />(%),Least positive or most negative answers <br />(%),Total responses
+2,Always/Almost always,Often,Sometimes,Rarely,Never/Almost never,Don't know,Not applicable,Most positive or least negative answers <br />(%),Least positive or most negative answers <br />(%),Total responses
+3,Not at all,To a small extent,To a moderate extent,To a large extent,To a very large extent,Don't know,Not applicable,Most positive or least negative answers <br />(%),Least positive or most negative answers <br />(%),Total responses
+4,Yes,No,Unsure,,,,,,,Total responses
+5,"Yes, to retire","Yes, to pursue another position within my department or agency","Yes, to pursue a position in another department or agency","Yes, to pursue a position outside the federal public service","Yes, end of my term, casual or student employment","Yes, other reason
+Specify other reason",,,,Total responses
+6,Yes,No,,,,,,,,Total responses
+7,Very low,Low,Moderate,High,Very High,Don't know,Not applicable,Most positive or least negative answers <br />(%),Least positive or most negative answers <br />(%),Total responses
+8,Excellent,Very good,Good,Fair,Poor,,,,,Total responses
+9,Yes,No,Not sure,Not applicable,,,,,,Total responses
+10,Working on-site at a Government of Canada all of the time,Working remotely all of the time,Combination of working remotely and at a Government of Canada site,,,,,,,Total responses
+11,20% (1 out of 5 days),40% (2 out of 5 days),60% (3 out of 5 days),80% (4 out of 5 days),"Other
+Please specify",,,,,Total responses
