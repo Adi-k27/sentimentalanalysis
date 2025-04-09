@@ -1,0 +1,43 @@
+{
+  "name": "Enhanced Health Canada Sentiment Analysis Theme",
+  "dataColors": [
+    "#008080", // Positive sentiment: Teal
+    "#FFD700", // Neutral sentiment: Gold
+    "#DC143C"  // Negative sentiment: Crimson
+  ],
+  "background": "#F5F5F5", // Soft grey background
+  "foreground": "#000000", // Black text for readability
+  "tableAccent": "#008080", // Accent for tables
+  "text": {
+    "fontFamily": "Segoe UI", // Professional font style
+    "fontSize": 12
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "outline": {
+          "color": "#C0C0C0", // Silver border for visuals
+          "weight": 1
+        },
+        "border": {
+          "color": "#D3D3D3", // Light grey for visual borders
+          "weight": 1
+        },
+        "title": {
+          "fontSize": 14,
+          "fontFamily": "Segoe UI",
+          "color": "#000000" // Consistent black for clarity
+        },
+        "background": {
+          "color": "#FFFFFF" // White background for visuals
+        }
+      }
+    }
+  },
+  "tooltip": {
+    "background": "#FFFFFF", // Tooltip background for contrast
+    "foreground": "#000000", // Black text in tooltips
+    "fontFamily": "Segoe UI",
+    "fontSize": 12
+  }
+}
