@@ -22,13 +22,7 @@ def classify_sentiment(score):
 def apply_sentiment_label(df, score_col="score100"):
     """
     Add a sentiment label column to the DataFrame.
-
-    Args:
-        df (pd.DataFrame): The dataset.
-        score_col (str): Name of the column containing sentiment scores.
-
-    Returns:
-        pd.DataFrame: Modified DataFrame with 'sentiment_label' column.
     """
+    df[score_col] = pd.to_numeric(df[score_col], errors="coerce")  # <-- Add this line
     df["sentiment_label"] = df[score_col].apply(classify_sentiment)
     return df
