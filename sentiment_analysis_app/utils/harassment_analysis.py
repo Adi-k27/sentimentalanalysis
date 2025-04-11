@@ -1,8 +1,15 @@
 import pandas as pd
 import plotly.express as px
 
-def plot_q57(df):
-    df_q57 = df[(df["question"] == "Q57") & (df["bycond"] == "Q117 = 2")].copy()
+def get_bycond(gender):
+    gender = gender.lower()
+    if gender == "men":
+        return "Q117 = 1"
+    return "Q117 = 2"  # default to women
+
+def plot_q57(df, gender="Women"):
+    bycond = get_bycond(gender)
+    df_q57 = df[(df["question"] == "Q57") & (df["bycond"] == bycond)].copy()
     df_q57["harassed_pct"] = pd.to_numeric(df_q57["answer1"], errors="coerce")
     df_q57["anscount"] = pd.to_numeric(df_q57["anscount"], errors="coerce")
     df_q57["label"] = (
@@ -16,14 +23,15 @@ def plot_q57(df):
         y="harassed_pct",
         markers=True,
         hover_name="label",
-        title="Q57 – Women Reporting Harassment at Work (Past 12 Months)",
+        title=f"Q57 – {gender} Reporting Harassment at Work (Past 12 Months)",
         labels={"surveyr": "Year", "harassed_pct": "% Harassed"}
     )
     fig.update_layout(hovermode="x unified", xaxis=dict(dtick=1), yaxis=dict(title="% Harassed"), width=800, height=500)
     return fig
 
-def plot_q58(df):
-    df_q58 = df[(df["question"].str.match(r"Q58[a-g]")) & (df["bycond"] == "Q117 = 2")].copy()
+def plot_q58(df, gender="Women"):
+    bycond = get_bycond(gender)
+    df_q58 = df[(df["question"].str.match(r"Q58[a-g]")) & (df["bycond"] == bycond)].copy()
     df_q58["harassment_source"] = df_q58["title_e"].str.extract(
         r"Question 58[a-g]\. From whom did you experience harassment on the job\? (.+)", expand=False
     )
@@ -42,15 +50,16 @@ def plot_q58(df):
         color="harassment_source",
         markers=True,
         hover_name="label",
-        title="Q58 – Harassment Sources Reported by Women (Trend)",
+        title=f"Q58 – Harassment Sources Reported by {gender} (Trend)",
         labels={"surveyr": "Year", "harassed_pct": "% Harassed"}
     )
     fig.update_layout(hovermode="x unified", xaxis=dict(dtick=1), yaxis_title="% Harassed", width=1000, height=600,
                       legend_title_text="Source", legend=dict(orientation="h", y=-0.3))
     return fig
 
-def plot_q59(df):
-    df_q59 = df[df["question"].str.match(r"Q59[a-m]") & (df["bycond"] == "Q117 = 2")].copy()
+def plot_q59(df, gender="Women"):
+    bycond = get_bycond(gender)
+    df_q59 = df[df["question"].str.match(r"Q59[a-m]") & (df["bycond"] == bycond)].copy()
     df_q59["harassment_type"] = df_q59["title_e"].str.extract(
         r"Question 59[a-m]\. Please indicate the nature of the harassment you experienced\. (.+)", expand=False)
     df_q59["harassed_pct"] = pd.to_numeric(df_q59["answer1"], errors="coerce")
@@ -63,43 +72,78 @@ def plot_q59(df):
     )
     fig = px.line(df_q59, x="surveyr", y="harassed_pct", color="harassment_type",
                   hover_name="label", markers=True,
-                  title="Q59 – Nature of Harassment Experienced by Women (2018–2022)",
+                  title=f"Q59 – Nature of Harassment Experienced by {gender} (2018–2022)",
                   labels={"surveyr": "Year", "harassed_pct": "% Harassed"})
     fig.update_layout(width=1100, height=650, legend_title="Harassment Type", hovermode="x unified", xaxis=dict(dtick=1))
     return fig
 
-def plot_q60(df):
-    df_q60 = df[df["question"].str.match(r"Q60[a-i]", case=False, na=False) & (df["bycond"].str.strip() == "Q117 = 2")].copy()
+def plot_q60(df, gender="Women"):
+    bycond = get_bycond(gender)
+    df_q60 = df[
+        df["question"].str.match(r"Q60[a-i]", case=False, na=False) &
+        (df["bycond"].str.strip() == bycond)
+    ].copy()
+
+    # Updated label map based on title_e
     label_map = {
-        "I spoke to the individual who harassed me": "Spoke to individual",
-        "I avoided the individual who harassed me": "Avoided individual",
-        "I asked someone else to speak to the individual who harassed me": "Asked 3rd party",
-        "I talked to my supervisor/manager": "Spoke to manager",
-        "I talked to a union representative": "Union rep",
+        "I discussed the matter with my supervisor or a senior manager": "Spoke to manager",
+        "I discussed the matter with the person(s) from whom I experienced the harassment": "Spoke to harasser",
+        "I contacted a human resources advisor in my department or agency": "Contacted HR",
+        "I contacted my union representative": "Union rep",
+        "I used an informal conflict resolution process": "Conflict resolution",
         "I filed a grievance or formal complaint": "Filed complaint",
-        "I talked to a human resources (HR) professional": "Spoke to HR",
-        "I talked to a departmental informal conflict resolution practitioner": "Conflict resolution",
+        "I resolved the matter informally on my own": "Resolved informally",
+        "Other": "Other",
         "I took no action": "Took no action"
     }
-    df_q60["action_taken"] = df_q60["title_e"].str.extract(r"harassment you experienced\? (.+)", expand=False).str.strip(" .")
+
+    # Properly extract action text
+    df_q60["action_taken"] = df_q60["title_e"].str.extract(
+        r"Question 60[a-i]\. What action\(s\) did you take to address the harassment you experienced\? (.+)", expand=False
+    ).str.strip().str.rstrip(".")  # Clean trailing punctuation
+
+    # Apply label map
     df_q60["action_taken_short"] = df_q60["action_taken"].map(label_map).fillna(df_q60["action_taken"])
+
+    # Metrics
     df_q60["pct_action"] = pd.to_numeric(df_q60["answer1"], errors="coerce")
     df_q60["anscount"] = pd.to_numeric(df_q60["anscount"], errors="coerce")
     df_q60["surveyr"] = pd.to_numeric(df_q60["surveyr"], errors="coerce")
+
+    # Hover tooltip
     df_q60["hover_label"] = (
         "Year: " + df_q60["surveyr"].astype(str) +
         "<br>Action: " + df_q60["action_taken"] +
         "<br>% Took Action: " + df_q60["pct_action"].astype(str) +
         "<br>Responses: " + df_q60["anscount"].astype(str)
     )
-    fig = px.line(df_q60, x="surveyr", y="pct_action", color="action_taken_short", markers=True,
-                  hover_name="hover_label", title="Q60 – Actions Women Took to Address Harassment (2018–2022)",
-                  labels={"surveyr": "Year", "pct_action": "% Who Took This Action"})
-    fig.update_layout(width=1150, height=650, legend_title="Action Taken", hovermode="x unified", xaxis=dict(dtick=1))
+
+    # Plot
+    fig = px.line(
+        df_q60,
+        x="surveyr",
+        y="pct_action",
+        color="action_taken_short",
+        markers=True,
+        hover_name="hover_label",
+        title=f"Q60 – Actions {gender} Took to Address Harassment (2018–2022)",
+        labels={"surveyr": "Year", "pct_action": "% Who Took This Action"}
+    )
+
+    fig.update_layout(
+        width=1150,
+        height=650,
+        legend_title="Action Taken",
+        hovermode="x unified",
+        xaxis=dict(dtick=1)
+    )
+
     return fig
 
-def plot_q61(df):
-    df_q61 = df[df["question"].str.match(r"Q61[a-p]", case=False, na=False) & (df["bycond"].str.strip() == "Q117 = 2")].copy()
+
+def plot_q61(df, gender="Women"):
+    bycond = get_bycond(gender)
+    df_q61 = df[df["question"].str.match(r"Q61[a-p]", case=False, na=False) & (df["bycond"].str.strip() == bycond)].copy()
     label_map = {
         "The issue was resolved": "Resolved",
         "The behaviour stopped": "Behaviour stopped",
@@ -129,13 +173,14 @@ def plot_q61(df):
         "<br>Responses: " + df_q61["anscount"].astype(str)
     )
     fig = px.line(df_q61, x="surveyr", y="pct_reason", color="reason_not_filed_short", markers=True,
-                  hover_name="hover_label", title="Q61 – Why Women Didn't File a Harassment Grievance (2018–2022)",
+                  hover_name="hover_label", title=f"Q61 – Why {gender} Didn't File a Harassment Grievance (2018–2022)",
                   labels={"surveyr": "Year", "pct_reason": "% Gave This Reason"})
     fig.update_layout(width=1150, height=650, legend_title="Reason", hovermode="x unified", xaxis=dict(dtick=1))
     return fig
 
-def plot_q63(df):
-    df_q63 = df[(df["question"].str.match(r"Q63")) & (df["bycond"] == "Q117 = 2")].copy()
+def plot_q63(df, gender="Women"):
+    bycond = get_bycond(gender)
+    df_q63 = df[(df["question"].str.match(r"Q63")) & (df["bycond"] == bycond)].copy()
     df_q63["surveyr"] = pd.to_numeric(df_q63["surveyr"], errors="coerce")
     df_q63["most_positive"] = pd.to_numeric(df_q63["most_positive_or_least_negative"], errors="coerce")
     df_q63["most_negative"] = pd.to_numeric(df_q63["most_negative_or_least_positive"], errors="coerce")
@@ -162,7 +207,7 @@ def plot_q63(df):
 
     fig = px.line(df_q63_melted, x="surveyr", y="percentage", color="sentiment_type",
                   hover_name="hover", markers=True,
-                  title="Q63 – Perception of Harassment Prevention Efforts (Women, 2018–2022)",
+                  title=f"Q63 – Perception of Harassment Prevention Efforts ({gender}, 2018–2022)",
                   labels={"surveyr": "Year", "percentage": "% Respondents"})
     fig.update_layout(width=1100, height=600, legend_title="Sentiment Category", hovermode="x unified",
                       xaxis=dict(dtick=1, title="Year"), yaxis=dict(title="% Respondents", range=[0, 100]))
